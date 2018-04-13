@@ -15,13 +15,14 @@
 //! # Examples
 //!
 //! ```
+//! extern crate google_authenticator;
 //! use google_authenticator::GoogleAuthenticator;
 //!
 //! let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
 //!
 //! let auth = GoogleAuthenticator::new();
 //! let code = auth.get_code(secret,0).unwrap();
-//! if auth.verify_code(secret, code, 1, 0) {
+//! if auth.verify_code(secret, code.as_str(), 1, 0).unwrap() {
 //!     println!("match!");
 //! }
 //!
@@ -35,6 +36,7 @@ extern crate hmacsha1;
 
 pub mod google_authenticator;
 
+pub use google_authenticator::{GoogleAuthenticator,GAError};
 
 #[cfg(test)]
 mod tests {
