@@ -11,7 +11,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-google-authenticator = "0.1.0"
+google-authenticator = "0.1.1"
 ```
 ## Examples
 ```rust
