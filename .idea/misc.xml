@@ -29,11 +29,10 @@
       </profile-state>
     </entry>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="true">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="true" assert-keyword="true" jdk-15="true">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="RustProjectSettings">
-    <option name="explicitPathToStdlib" value="C:\Users\guohao\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\src" />
-    <option name="toolchainHomeDirectory" value="C:/Program Files (x86)/Rust nightly MSVC 1.26/bin" />
+    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
   </component>
 </project>
