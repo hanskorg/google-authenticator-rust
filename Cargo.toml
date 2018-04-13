@@ -6,7 +6,7 @@ repository = "https://github.com/hanskorg/google-authenticator-rust.git"
 homepage = "https://github.com/hanskorg/google-authenticator-rust.git"
 license = "MIT"
 readme = "README.md"
-documentation = "This Rust crate can be used to interact with the Google Authenticator mobile app for 2-factor-authentication."
+description = "This Rust crate can be used to interact with the Google Authenticator mobile app for 2-factor-authentication."
 
 [dependencies]
 rand = "0.4"
