@@ -50,13 +50,13 @@ impl GoogleAuthenticator{
     /// Calculate the code, with given secret and point in time.
     ///
     /// Example:
-    ///```rust
-    ///     use google_authenticator::GoogleAuthenticator;
+    ///```
+    /// use google_authenticator::GoogleAuthenticator;
     ///
-    ///     let google_authenticator = GoogleAuthenticator::new();
-    ///     google_authenticator.create_secret(6);
+    /// let google_authenticator = GoogleAuthenticator::new();
+    /// google_authenticator.create_secret(6);
     ///
-    /// ```
+    ///```
     ///
     pub fn create_secret(&self, length:u8) -> String{
         let rand_bytes = rand::random::<[u8;32]>();
@@ -72,7 +72,7 @@ impl GoogleAuthenticator{
     /// Calculate the code, with given secret and point in time.
     ///
     /// Example:
-    ///```rust
+    ///```
     ///     use google_authenticator::GoogleAuthenticator;
     ///
     ///     let google_authenticator = GoogleAuthenticator::new();
@@ -121,7 +121,7 @@ impl GoogleAuthenticator{
     /// `discrepancy` This will accept codes starting from *discrepancy\*30sec* ago to *discrepancy\*30sec* from now.
     /// `time_slice` if give 0, it will system unix_timestamp
     ///
-    ///```rust
+    ///```
     ///     use google_authenticator::GoogleAuthenticator;
     ///
     ///     let google_authenticator = GoogleAuthenticator::new();

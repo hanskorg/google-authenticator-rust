@@ -15,7 +15,6 @@
 //! # Examples
 //!
 //! ```
-//! extern crate google_authenticator;
 //!
 //! use google_authenticator::GoogleAuthenticator;
 //!
@@ -56,7 +55,6 @@ mod tests {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
         //otpauth://totp/test?secret=I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3 1523610659 559389
-        println!("{}",1523610659 / 30);
         assert_eq!(auth.get_code(secret,  1523610659 / 30).unwrap(), "224124");
     }
 
