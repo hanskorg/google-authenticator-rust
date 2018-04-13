@@ -16,6 +16,7 @@
 //!
 //! ```
 //! extern crate google_authenticator;
+//!
 //! use google_authenticator::GoogleAuthenticator;
 //!
 //! let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
