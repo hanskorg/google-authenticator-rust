@@ -47,14 +47,15 @@ impl GoogleAuthenticator{
             ]
         }
     }
-    /// Calculate the code, with given secret and point in time.
+    /// Create new secret.
+    /// characters, randomly chosen from the allowed base32 characters.
     ///
     /// Example:
     ///```
     /// use google_authenticator::GoogleAuthenticator;
     ///
     /// let google_authenticator = GoogleAuthenticator::new();
-    /// google_authenticator.create_secret(6);
+    /// google_authenticator.create_secret(32);
     ///
     ///```
     ///

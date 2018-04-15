@@ -1,6 +1,6 @@
 [package]
 name = "google-authenticator"
-version = "0.1.1"
+version = "0.1.3"
 authors = ["hans <hans@hansk.org>"]
 repository = "https://github.com/hanskorg/google-authenticator-rust.git"
 homepage = "https://github.com/hanskorg/google-authenticator-rust.git"
@@ -8,7 +8,7 @@ license = "MIT"
 readme = "README.md"
 description = "This Rust crate can be used to interact with the Google Authenticator mobile app for 2-factor-authentication."
 keywords = ["GoogleAuthenticator"]
-categories = ["authentication", "cryptography"]
+categories = ["Google Authenticator", "cryptography"]
 
 
 [dependencies]
