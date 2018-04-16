@@ -1,12 +1,12 @@
 # GoogleAuthenticator
-##Introduction
-This Rust crate can be used to interact with the Google Authenticator mobile app for 2-factor-authentication.
-This Rust crates can generate secrets, generate codes, validate codes and present a QR-Code for scanning the secret.
-It implements TOTP according to RFC6238
-More about Google GoogleAuthenticator see:
-https://en.wikipedia.org/wiki/Google_Authenticator
 [![Build Status](https://travis-ci.org/hanskorg/google-authenticator-rust.svg?branch=master)](https://travis-ci.org/hanskorg/google-authenticator-rust)
 ![Build Status](https://img.shields.io/crates/v/google-authenticator.svg)
+
+## Introduction
+This Rust crate can be used to interact with the Google Authenticator mobile app for 2-factor-authentication.This Rust crates can generate secrets, generate codes, validate codes and present a QR-Code for scanning the secret.It implements TOTP according to RFC6238
+More about Google GoogleAuthenticator see:[Wiki](https://en.wikipedia.org/wiki/Google_Authenticator)
+
+
 ## Usage
 Add this to your `Cargo.toml`:
 
