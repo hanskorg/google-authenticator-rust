@@ -186,11 +186,7 @@ impl GoogleAuthenticator{
             'H' => EcLevel::H,
             _ => EcLevel::M
         };
-        let scheme =  urlencoding::encode(
-            format!("otpauth://totp/{}?secret={}&issuer={}"
-                    ,name
-                    ,secret
-                    ,urlencoding::encode(title)).as_str());
+        let scheme = format!("otpauth://totp/{}?secret={}&issuer={}", name, secret, title);
         let code = QrCode::with_error_correction_level(scheme.as_bytes(), _level)?;
         Ok(code.render()
             .min_dimensions(_width as u32, _height  as u32)

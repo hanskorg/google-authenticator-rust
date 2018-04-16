@@ -12,7 +12,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-google-authenticator = "0.1.4"
+google-authenticator = "0.1.5"
 ```
 ## Examples
 ```rust
@@ -38,7 +38,7 @@ google-authenticator = "0.1.4"
 Change `Cargo.toml` to
 ```toml
     [dependencies.google-authenticator]
-    version = "0.1.4"
+    version = "0.1.5"
     default-features = false
     features = ["with-qrcode"]
 ```
@@ -48,7 +48,7 @@ Change `Cargo.toml` to
     let auth = GoogleAuthenticator::new();
     let code = auth.get_code(secret,0).unwrap();
 
-    println!("{}",auth.qr_code(secret,"qr_code","name",200,200,'H')));
+    println!("{}",auth.qr_code(secret,"qr_code","name",200,200,'H'));
 ```
 
 ## FAQ
