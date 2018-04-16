@@ -32,7 +32,10 @@
 extern crate rand;
 extern crate base32;
 extern crate hmacsha1;
+extern crate urlencoding;
 
+#[cfg(any(feature = "with-qrcode"))]
+extern crate qrcode;
 
 pub mod google_authenticator;
 
@@ -59,9 +62,11 @@ mod tests {
     }
 
     #[test]
+    #[cfg(any(feature = "with-qrcode"))]
     fn test_verify_code(){
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+        println!("{:?}",auth.qr_code(secret,"qr_code","name",0,0,'H'));
         assert!(auth.verify_code(secret, "224124", 3, 1523610659 / 30).unwrap());
     }
 }

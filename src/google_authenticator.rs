@@ -27,6 +27,15 @@ use base32;
 use hmacsha1::hmac_sha1;
 use std::mem;
 use std::time::{SystemTime, UNIX_EPOCH};
+use urlencoding;
+
+#[cfg(any(feature = "with-qrcode"))]
+use qrcode::{QrCode, Version, EcLevel};
+#[cfg(any(feature = "with-qrcode"))]
+use qrcode::render::svg;
+
+const SECRET_MAX_LEN:usize = 128;
+const SECRET_MIN_LEN:usize = 16;
 
 pub struct GoogleAuthenticator{
     code_len:usize,
@@ -60,11 +69,10 @@ impl GoogleAuthenticator{
     ///```
     ///
     pub fn create_secret(&self, length:u8) -> String{
-        let rand_bytes = rand::random::<[u8;32]>();
         let mut secret = Vec::<char>::new();
-        let mut index: usize;
-        for i in 0 .. length {
-            index = (rand_bytes[i as usize] & 0x1F) as usize;
+        let mut index:usize = 0;
+        for _ in 0 .. length {
+            index = (rand::random::<u8>() & 0x1F) as usize;
             secret.push(self._base32_alphabet[ index ]);
         }
         secret.into_iter().collect()
@@ -85,7 +93,7 @@ impl GoogleAuthenticator{
     ///
     pub fn get_code(&self, secret:&str, times_slice:u32) -> Result<String>{
 
-        if secret.len() < 16 || secret.len() > 128 {
+        if secret.len() < SECRET_MIN_LEN || secret.len() > SECRET_MAX_LEN {
             return Err(GAError::Error("bad secret length. must be less than 128 and more than 16, recommand 32"));
         }
 
@@ -146,6 +154,50 @@ impl GoogleAuthenticator{
         }
         Ok(false)
     }
+    /// Get QR-Code URL for image, from google charts.
+    /// width: width of the qrcode. default value 200 px
+    /// height: height of the qrcode. default value 200 px
+    /// level: the qrcode level ,it will be L,M,Q,H. Default value is M
+    ///
+    pub fn qr_code_url(&self, secret:&str, name:&str, title:&str, width:u16, height:u16, level:char) -> String {
+        let _width = if width == 0 {200} else {width};
+        let _height = if  height == 0 {200} else {height};
+        let levels = vec!['L', 'M', 'Q', 'H'];
+        let _level = if levels.contains(&level) {level} else {'M'};
+        let scheme =  urlencoding::encode(
+            format!("otpauth://totp/{}?secret={}&issuer={}"
+                    ,name
+                    ,secret
+                    ,urlencoding::encode(title)).as_str());
+        format!("https://chart.googleapis.com/chart?chs={}x{}&chld={}|0&cht=qr&chl={}", _width, _height, level, scheme)
+    }
+    /// Get QR-Code  for svg
+    /// Get QR-Code URL for image, from google charts.
+    /// width: width of the qrcode. default value 200 px
+    /// height: height of the qrcode. default value 200 px
+    /// level: the qrcode level ,it will be L,M,Q,H. Default value is M
+    #[cfg(any(feature = "with-qrcode"))]
+    pub fn qr_code(&self, secret:&str, name:&str, title:&str, width:u16, height:u16, level:char) -> Result<String>{
+        let _width = if width == 0 {200} else {width};
+        let _height = if  height == 0 {200} else {height};
+        let levels = vec!['L', 'M', 'Q', 'H'];
+        let _level = match level {
+            'L' => EcLevel::L,
+            'H' => EcLevel::H,
+            _ => EcLevel::M
+        };
+        let scheme =  urlencoding::encode(
+            format!("otpauth://totp/{}?secret={}&issuer={}"
+                    ,name
+                    ,secret
+                    ,urlencoding::encode(title)).as_str());
+        let code = QrCode::with_error_correction_level(scheme.as_bytes(), _level)?;
+        Ok(code.render()
+            .min_dimensions(_width as u32, _height  as u32)
+            .dark_color(svg::Color("#800000"))
+            .light_color(svg::Color("#ffff80"))
+            .build())
+    }
 
     fn _base32_decode(&self, secret:&str) -> Result<Vec<u8>>{
         //use base32 extern
@@ -153,7 +205,6 @@ impl GoogleAuthenticator{
             Some(_decode_str) => Ok(_decode_str),
             _                 => Err(GAError::Error("secret must can decode by base32."))
         }
-
     }
 
 }
@@ -162,31 +213,45 @@ impl GoogleAuthenticator{
 use std::error;
 use std::result;
 use std::fmt;
-
+#[cfg(any(feature = "with-qrcode"))]
+use qrcode::types::QrError;
 #[derive(Debug)]
 pub enum GAError {
     Error(&'static str),
+    #[cfg(any(feature = "with-qrcode"))]
+    QrError(QrError)
 }
 
 impl error::Error for GAError{
     fn description(&self) -> &str {
         match *self {
             GAError::Error(description) =>description,
+            #[cfg(any(feature = "with-qrcode"))]
+            GAError::QrError(ref err) => ""
         }
     }
 
     fn cause(&self) -> Option<&error::Error> {
         match *self {
+            #[cfg(any(feature = "with-qrcode"))]
+            GAError::QrError(ref err) =>  None,
             GAError::Error(_) => None,
         }
     }
 }
-
+#[cfg(any(feature = "with-qrcode"))]
+impl From<QrError> for GAError{
+    fn from(err:QrError) -> GAError {
+        GAError::QrError(err)
+    }
+}
 
 impl fmt::Display for GAError{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             GAError::Error(desc) => f.write_str(desc),
+            #[cfg(any(feature = "with-qrcode"))]
+            GAError::QrError(ref err) =>  fmt::Display::fmt(err, f),
         }
     }
 }
