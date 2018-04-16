@@ -190,8 +190,8 @@ impl GoogleAuthenticator{
         let code = QrCode::with_error_correction_level(scheme.as_bytes(), _level)?;
         Ok(code.render()
             .min_dimensions(_width as u32, _height  as u32)
-            .dark_color(svg::Color("#800000"))
-            .light_color(svg::Color("#ffff80"))
+            .dark_color(svg::Color("#000000"))
+            .light_color(svg::Color("#ffffff"))
             .build())
     }
 
