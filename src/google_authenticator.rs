@@ -70,7 +70,7 @@ impl GoogleAuthenticator{
     ///
     pub fn create_secret(&self, length:u8) -> String{
         let mut secret = Vec::<char>::new();
-        let mut index:usize = 0;
+        let mut index:usize ;
         for _ in 0 .. length {
             index = (rand::random::<u8>() & 0x1F) as usize;
             secret.push(self._base32_alphabet[ index ]);
@@ -99,8 +99,9 @@ impl GoogleAuthenticator{
 
         let mut message: u32 = times_slice;
         if times_slice == 0 {
-            message = (f64::from_bits(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()) / 30.0).floor() as u32;
+            message =(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as u32) / 30 ;
         }
+        // println!("{:?}", message);
         let key  = self._base32_decode(secret)?;
         let msg_bytes = unsafe { mem::transmute::<u32,[u8;4]>(message.to_be()) };
         let mut message_body:Vec<u8> = vec![0;4];
@@ -141,7 +142,7 @@ impl GoogleAuthenticator{
     pub fn verify_code(&self, secret:&str, code: &str, discrepancy:u32, time_slice:u32) -> Result<bool>{
         let mut curr_time_slice: u32 = time_slice;
         if time_slice == 0 {
-            curr_time_slice = (f64::from_bits(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()) / 30.0).floor() as u32;
+            curr_time_slice = (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as u32) / 30 ;
         }
         if code.len() != self.code_len {
             return Ok(false);
