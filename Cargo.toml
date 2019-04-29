@@ -1,6 +1,6 @@
 [package]
 name = "google-authenticator"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["hans <hans@hansk.org>"]
 repository = "https://github.com/hanskorg/google-authenticator-rust.git"
 homepage = "https://github.com/hanskorg/google-authenticator-rust.git"
