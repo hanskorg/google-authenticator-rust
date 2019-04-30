@@ -91,35 +91,36 @@ impl GoogleAuthenticator{
     /// *secret* : user secret, it will verify each user.
     /// *times_slice* : unix_timestamp / 30 ,if give 0, it will system unix_timestamp
     ///
-    pub fn get_code(&self, secret:&str, times_slice:u32) -> Result<String>{
+    pub fn get_code(&self, secret:&str, times_slice:i64) -> Result<String>{
 
         if secret.len() < SECRET_MIN_LEN || secret.len() > SECRET_MAX_LEN {
             return Err(GAError::Error("bad secret length. must be less than 128 and more than 16, recommand 32"));
         }
 
-        let mut message: u32 = times_slice;
+        let mut message: i64 = times_slice;
         if times_slice == 0 {
-            message =(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as u32) / 30 ;
+            message = (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64) / 30;
         }
         // println!("{:?}", message);
         let key  = self._base32_decode(secret)?;
-        let msg_bytes = unsafe { mem::transmute::<u32,[u8;4]>(message.to_be()) };
-        let mut message_body:Vec<u8> = vec![0;4];
-        for msg_byte in msg_bytes.iter() {
-            message_body.push(*msg_byte);
-        }
-        let hash = hmac_sha1(&key, message_body.as_slice());
+        let msg_bytes = message.to_be_bytes();//unsafe { mem::transmute::<i64,[u8;8]>(message.to_be()) };
+        // let mut message_body:Vec<u8> = vec![0;4];
+        // for msg_byte in msg_bytes.iter() {
+        //     message_body.push(*msg_byte);
+        // }
+        let hash = hmac_sha1(&key, &msg_bytes);
 
         let offset = hash[hash.len() - 1] & 0x0F;
         let mut truncated_hash:[u8;4] = Default::default();
         truncated_hash.copy_from_slice(&hash[offset  as usize .. (offset + 4)  as usize]);
-        let mut code:u32 = unsafe { mem::transmute::<[u8;4], u32>(truncated_hash) };
+        let mut code:i32 = unsafe { mem::transmute::<[u8;4], i32>(truncated_hash) };
         if cfg!(target_endian = "big") {
         } else {
-            code = u32::from_be(code);
+            code = i32::from_be(code);
         }
-        code =  code % 1_000_000u32;
-        let mut code_str = code.to_string();
+        code = code & 0x7FFFFFFF;
+        code =  code % 1_000_000i32;
+        let mut code_str = code.to_string();        
         for i in 0 .. (self.code_len - code_str.len()) {
             code_str.insert(i,'0');
         }
@@ -139,15 +140,17 @@ impl GoogleAuthenticator{
     ///
     /// ```
     ///
-    pub fn verify_code(&self, secret:&str, code: &str, discrepancy:u32, time_slice:u32) -> Result<bool>{
-        let mut curr_time_slice: u32 = time_slice;
+    pub fn verify_code(&self, secret:&str, code: &str, discrepancy:i64, time_slice:i64) -> Result<bool>{
+        let mut curr_time_slice: i64 = time_slice;
         if time_slice == 0 {
-            curr_time_slice = (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as u32) / 30 ;
+            curr_time_slice = (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64) / 30 ;
         }
         if code.len() != self.code_len {
             return Ok(false);
         }
         for _time_slice in curr_time_slice.wrapping_sub(discrepancy) .. curr_time_slice.wrapping_add(discrepancy + 1)  {
+            println!("{:?}",_time_slice);
+            println!("{:?}",_time_slice);
             if code.eq(self.get_code(secret, _time_slice)?.as_str()) {
                 return Ok(true);
             }

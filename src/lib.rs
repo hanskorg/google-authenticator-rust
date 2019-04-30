@@ -57,7 +57,7 @@ mod tests {
     fn test_code(){
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        println!("{:?}", auth.get_code(secret,  0).unwrap());
+        assert_eq!(6, auth.get_code(&secret, 0).unwrap().len());
     }
 
     #[test]
