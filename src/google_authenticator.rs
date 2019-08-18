@@ -149,8 +149,6 @@ impl GoogleAuthenticator{
             return Ok(false);
         }
         for _time_slice in curr_time_slice.wrapping_sub(discrepancy) .. curr_time_slice.wrapping_add(discrepancy + 1)  {
-            println!("{:?}",_time_slice);
-            println!("{:?}",_time_slice);
             if code.eq(self.get_code(secret, _time_slice)?.as_str()) {
                 return Ok(true);
             }
