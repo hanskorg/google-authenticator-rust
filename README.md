@@ -27,12 +27,9 @@ fn main() {
     let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
     let auth = GoogleAuthenticator::new();
     // let secret = auth.create_secret(32);
+    let code = auth.get_code(&secret, 0).unwrap();
 
-    println!(
-        "{}",
-        auth.qr_code(&secret, "qr_code", "name", 200, 200, 'H')
-            .unwrap()
-    );
+    assert!(auth.verify_code(&secret, &code, 1, 0).unwrap());
 }
 ```
 
