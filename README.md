@@ -32,7 +32,7 @@ if auth.verify_code(secret, code, 1, 0) {
 ```rust
 let auth = GoogleAuthenticator::new();
 let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-auth.qr_code_url(secret,"qr_code","name",200,200,'H'));
+auth.qr_code_url(secret,"qr_code","name",200,200,'H');
 
 ```
 ### Get QR code image in svg format
