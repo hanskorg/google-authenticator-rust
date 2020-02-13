@@ -141,12 +141,12 @@ impl GoogleAuthenticator{
     /// ```
     ///
     pub fn verify_code(&self, secret:&str, code: &str, discrepancy:i64, time_slice:i64) -> bool {
+        if code.len() != self.code_len {
+            return false;
+        }
         let mut curr_time_slice: i64 = time_slice;
         if time_slice == 0 {
             curr_time_slice = (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64) / 30 ;
-        }
-        if code.len() != self.code_len {
-            return false;
         }
         for _time_slice in curr_time_slice.wrapping_sub(discrepancy) .. curr_time_slice.wrapping_add(discrepancy + 1)  {
             if let Ok(c) = self.get_code(secret, _time_slice) {
