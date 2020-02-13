@@ -22,7 +22,7 @@
 //!
 //! let auth = GoogleAuthenticator::new();
 //! let code = auth.get_code(secret,0).unwrap();
-//! if auth.verify_code(secret, code.as_str(), 1, 0).unwrap() {
+//! if auth.verify_code(secret, code.as_str(), 1, 0) {
 //!     println!("match!");
 //! }
 //!
@@ -73,7 +73,7 @@ macro_rules! verify_code {
         GA_AUTH.verify_code($secret, $code, $discrepancy, $time_slice)
     };
     ($secret: expr, $code: expr) => {
-        GA_AUTH.verify_code($secret, $code, 1, 0)
+        GA_AUTH.verify_code($secret, $code, 0, 0)
     };
 }
 
@@ -122,7 +122,7 @@ mod tests {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
         println!("{:?}",auth.qr_code(secret,"qr_code","name",0,0,'H'));
-        assert!(auth.verify_code(secret, "224124", 3, 1523610659 / 30).unwrap());
+        assert!(auth.verify_code(secret, "224124", 3, 1523610659 / 30));
     }
 }
 
@@ -143,9 +143,22 @@ mod macro_tests {
     }
 
     #[test]
-    #[cfg(any(feature = "with-qrcode"))]
     fn test_verify_code() {
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        assert!(verify_code!(secret, "224124").unwrap());
+        let code = get_code!(&secret).unwrap();
+        assert!(verify_code!(secret, &code));
+    }
+
+    #[test]
+    #[cfg(any(feature = "with-qrcode"))]
+    fn test_qr_code() {
+        let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+        assert!(qr_code!(secret, "qr_code", "name").is_ok());
+    }
+    #[test]
+    #[cfg(any(feature = "with-qrcode"))]
+    fn test_qr_code_url() {
+        let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+        assert!(qr_code_url!(secret, "qr_code", "name").is_ok());
     }
 }

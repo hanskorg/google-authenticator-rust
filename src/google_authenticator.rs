@@ -136,25 +136,26 @@ impl GoogleAuthenticator{
     ///     use google_authenticator::GoogleAuthenticator;
     ///
     ///     let google_authenticator = GoogleAuthenticator::new();
-    ///     google_authenticator.verify_code("I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3", "224124", 3, 1523610659 / 30).unwrap();
+    ///     google_authenticator.verify_code("I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3", "224124", 3, 1523610659 / 30);
     ///
     /// ```
     ///
-    pub fn verify_code(&self, secret:&str, code: &str, discrepancy:i64, time_slice:i64) -> Result<bool>{
+    pub fn verify_code(&self, secret:&str, code: &str, discrepancy:i64, time_slice:i64) -> bool {
         let mut curr_time_slice: i64 = time_slice;
         if time_slice == 0 {
             curr_time_slice = (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64) / 30 ;
         }
         if code.len() != self.code_len {
-            return Ok(false);
+            return false;
         }
         for _time_slice in curr_time_slice.wrapping_sub(discrepancy) .. curr_time_slice.wrapping_add(discrepancy + 1)  {
-            if code.eq(self.get_code(secret, _time_slice)?.as_str()) {
-                return Ok(true);
+            if let Ok(c) = self.get_code(secret, _time_slice) {
+                if code.eq(c.as_str()) {
+                    return true;
+                }
             }
-
         }
-        Ok(false)
+        false
     }
     /// Get QR-Code URL for image, from google charts.
     /// width: width of the qrcode. default value 200 px
