@@ -15,7 +15,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-google-authenticator = "0.1.5"
+google-authenticator = "0.1.9"
 ```
 
 ## Examples
@@ -80,7 +80,7 @@ Change `Cargo.toml` to
 
 ```toml
 [dependencies.google-authenticator]
-version = "0.1.5"
+version = "0.1.9"
 default-features = false
 features = ["with-qrcode"]
 ```
@@ -112,6 +112,9 @@ fn main() {
     }
 }
 ```
+
+## Contributors
+    Thanks: [JHZheng](https://github.com/zjhmale)  [Conbas](https://github.com/jtr109)
 
 ## FAQ
 > You can post a new issue for help.

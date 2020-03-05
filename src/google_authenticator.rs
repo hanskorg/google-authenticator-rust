@@ -230,7 +230,7 @@ impl error::Error for GAError{
         }
     }
 
-    fn cause(&self) -> Option<&error::Error> {
+    fn cause(&self) -> Option<&dyn error::Error> {
         match *self {
             #[cfg(any(feature = "with-qrcode"))]
             GAError::QrError(ref err) =>  None,
