@@ -33,6 +33,19 @@ fn main() {
 }
 ```
 
+```rust
+#[macro_use]
+extern crate google_authenticator;
+use google_authenticator::GA_AUTH;
+
+fn main() {
+    let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+    if let Ok(code) = get_code!(&secret) {
+        println!("{}", verify_code!(&secret, &code, 1, 0));
+    }
+}
+```
+
 ## Get the secret QR code
 
 ### Get Google Charts Url to make QR Code
@@ -49,6 +62,18 @@ fn main() {
     );
 }
 ```
+
+```rust
+#[macro_use]
+extern crate google_authenticator;
+use google_authenticator::GA_AUTH;
+
+fn main() {
+    let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+    println!("{}", qr_code_url!(&secret, "qr_code", "name"));
+}
+```
+
 ### Get QR code image in svg format
 
 Change `Cargo.toml` to
@@ -59,6 +84,7 @@ version = "0.1.5"
 default-features = false
 features = ["with-qrcode"]
 ```
+
 ```rust
 use google_authenticator::GoogleAuthenticator;
 
@@ -74,6 +100,18 @@ fn main() {
 }
 ```
 
+```rust
+#[macro_use]
+extern crate google_authenticator;
+use google_authenticator::GA_AUTH;
+
+fn main() {
+    let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+    if let Ok(url) = qr_code!(&secret, "qr_code", "name") {
+        println!("{}", url);
+    }
+}
+```
 
 ## FAQ
 > You can post a new issue for help.
