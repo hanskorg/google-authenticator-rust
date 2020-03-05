@@ -114,7 +114,8 @@ fn main() {
 ```
 
 ## Contributors
-    Thanks: [JHZheng](https://github.com/zjhmale)  [Conbas](https://github.com/jtr109)
+Thanks to:
+[JHZheng](https://github.com/zjhmale)  [Conbas](https://github.com/jtr109)
 
 ## FAQ
 > You can post a new issue for help.
