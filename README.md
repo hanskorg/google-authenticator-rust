@@ -15,7 +15,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-google-authenticator = "0.1.9"
+google-authenticator = "0.2.0"
 ```
 
 ## Examples
@@ -51,14 +51,14 @@ fn main() {
 ### Get Google Charts Url to make QR Code
 
 ```rust
-use google_authenticator::GoogleAuthenticator;
+use google_authenticator::{GoogleAuthenticator, ErrorCorrectionLevel};
 
 fn main() {
     let auth = GoogleAuthenticator::new();
     let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
     println!(
         "{}",
-        auth.qr_code_url(secret, "qr_code", "name", 200, 200, 'H')
+        auth.qr_code_url(secret, "qr_code", "name", 200, 200, ErrorCorrectionLevel::High)
     );
 }
 ```
@@ -81,12 +81,11 @@ Change `Cargo.toml` to
 ```toml
 [dependencies.google-authenticator]
 version = "0.1.9"
-default-features = false
 features = ["with-qrcode"]
 ```
 
 ```rust
-use google_authenticator::GoogleAuthenticator;
+use google_authenticator::{GoogleAuthenticator, ErrorCorrectionLevel};
 
 fn main() {
     let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
@@ -94,7 +93,7 @@ fn main() {
 
     println!(
         "{}",
-        auth.qr_code(secret, "qr_code", "name", 200, 200, 'H')
+        auth.qr_code(secret, "qr_code", "name", 200, 200, ErrorCorrectionLevel::High)
             .unwrap()
     );
 }

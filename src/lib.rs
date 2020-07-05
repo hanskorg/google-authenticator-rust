@@ -1,3 +1,4 @@
+#![deny(missing_docs)]
 // Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution and at
 // http://rust-lang.org/COPYRIGHT.
@@ -14,8 +15,7 @@
 //!
 //! # Examples
 //!
-//! ```
-//!
+//! ```rust
 //! use google_authenticator::GoogleAuthenticator;
 //!
 //! let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
@@ -25,28 +25,21 @@
 //! if auth.verify_code(secret, code.as_str(), 1, 0) {
 //!     println!("match!");
 //! }
-//!
 //! ```
-//!
-//!
-#[macro_use]
-extern crate lazy_static;
-extern crate rand;
-extern crate base32;
-extern crate hmacsha1;
-extern crate urlencoding;
 
-#[cfg(any(feature = "with-qrcode"))]
-extern crate qrcode;
+mod authenticator;
 
-pub mod google_authenticator;
+pub use authenticator::*;
 
-pub use google_authenticator::{GoogleAuthenticator,GAError};
-
-lazy_static! {
+lazy_static::lazy_static! {
+    /// A globally accessible, thread safe instance of a `GoogleAuthenticator`. Note that if the
+    /// code panics while this variable is in scope, the `std::sync::Mutex` can be poisoned,
+    /// preventing further access to this variable.
     pub static ref GA_AUTH: GoogleAuthenticator = GoogleAuthenticator::new();
 }
 
+/// A macro that can be used for convenient access to the function
+/// `GoogleAuthenticator::create_secret`, by providing a default of `32` to the `length` parameter.
 #[macro_export]
 macro_rules! create_secret {
     ($length: expr) => {
@@ -57,6 +50,9 @@ macro_rules! create_secret {
     };
 }
 
+/// A macro that can be used for convenient access to the function
+/// `GoogleAuthenticator::create_secret`, by providing a default of the current time to the
+/// `times_slice` parameter.
 #[macro_export]
 macro_rules! get_code {
     ($secret: expr, $time_slice: expr) => {
@@ -67,6 +63,9 @@ macro_rules! get_code {
     };
 }
 
+/// A macro that can be used for convenient access to the function
+/// `GoogleAuthenticator::verify_code`, by providing a default of 0 to the `discrepancy` parameter,
+/// and the current time to the `times_slice` parameter.
 #[macro_export]
 macro_rules! verify_code {
     ($secret: expr, $code: expr, $discrepancy: expr, $time_slice: expr) => {
@@ -77,58 +76,101 @@ macro_rules! verify_code {
     };
 }
 
+/// A macro that can be used for convenient access to the function
+/// `GoogleAuthenticator::qr_code_url`, by providing a default of 200 to the `width` parameter, 200
+/// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
 #[macro_export]
 macro_rules! qr_code_url {
     ($secret: expr, $name: expr, $title: expr, $width: expr, $height: expr, $level: expr) => {
         GA_AUTH.qr_code_url($secret, $name, $title, $width, $height, $level)
     };
     ($secret: expr, $name: expr, $title: expr) => {
-        GA_AUTH.qr_code_url($secret, $name, $title, 200, 200, 'M')
+        GA_AUTH.qr_code_url(
+            $secret,
+            $name,
+            $title,
+            200,
+            200,
+            crate::ErrorCorrectionLevel::Medium,
+        )
     };
 }
 
+/// A macro that can be used for convenient access to the function
+/// `GoogleAuthenticator::qr_code`, by providing a default of 200 to the `width` parameter, 200
+/// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
 #[macro_export]
 macro_rules! qr_code {
     ($secret: expr, $name: expr, $title: expr, $width: expr, $height: expr, $level: expr) => {
         GA_AUTH.qr_code($secret, $name, $title, $width, $height, $level)
     };
     ($secret: expr, $name: expr, $title: expr) => {
-        GA_AUTH.qr_code($secret, $name, $title, 200, 200, 'M')
+        GA_AUTH.qr_code(
+            $secret,
+            $name,
+            $title,
+            200,
+            200,
+            crate::ErrorCorrectionLevel::Medium,
+        )
     };
 }
 
 #[cfg(test)]
 mod tests {
-    use google_authenticator::GoogleAuthenticator;
+    #[cfg(feature = "with-qrcode")]
+    use crate::ErrorCorrectionLevel::*;
+    use crate::GoogleAuthenticator;
 
     #[test]
     fn create_secret() {
         let auth = GoogleAuthenticator::new();
         let secret = auth.create_secret(32);
         //auth.get_code(secret.as_str(),0);
-//        println!("{:?}",secret);
-        assert_eq!(secret.len(),32);
+        //        println!("{:?}",secret);
+        assert_eq!(secret.len(), 32);
     }
     #[test]
-    fn test_code(){
+    fn test_code() {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
         assert_eq!(6, auth.get_code(&secret, 0).unwrap().len());
     }
 
     #[test]
-    #[cfg(any(feature = "with-qrcode"))]
-    fn test_verify_code(){
+    #[cfg(feature = "with-qrcode")]
+    fn test_verify_code() {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        println!("{:?}",auth.qr_code(secret,"qr_code","name",0,0,'H'));
+        println!(
+            "{:?}",
+            auth.qr_code(secret, "qr_code", "name", 0, 0, Medium)
+        );
         assert!(auth.verify_code(secret, "224124", 3, 1523610659 / 30));
+    }
+
+    #[test]
+    #[cfg(feature = "with-qrcode")]
+    fn test_qr_code_url() {
+        let auth = GoogleAuthenticator::new();
+        let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+        let url = auth.qr_code_url(secret, "secret code", "hi", 0, 0, Medium);
+        let resp = ureq::get(&url).call();
+        assert!(resp.ok());
+    }
+
+    #[test]
+    #[cfg(feature = "with-qrcode")]
+    fn test_qr_code() {
+        let auth = GoogleAuthenticator::new();
+        let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+        auth.qr_code(secret, "secret_code", "hi", 0, 0, Medium).unwrap();
     }
 }
 
 #[cfg(test)]
 mod macro_tests {
-    use GA_AUTH;
+    use crate::GA_AUTH;
 
     #[test]
     fn create_secret() {
@@ -150,15 +192,16 @@ mod macro_tests {
     }
 
     #[test]
-    #[cfg(any(feature = "with-qrcode"))]
+    #[cfg(feature = "with-qrcode")]
     fn test_qr_code() {
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
         assert!(qr_code!(secret, "qr_code", "name").is_ok());
     }
+
     #[test]
-    #[cfg(any(feature = "with-qrcode"))]
+    #[cfg(feature = "with-qrcode")]
     fn test_qr_code_url() {
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        assert!(qr_code_url!(secret, "qr_code", "name").is_ok());
+        qr_code_url!(secret, "qr_code", "name");
     }
 }
