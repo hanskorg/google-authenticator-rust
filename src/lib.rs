@@ -158,7 +158,6 @@ mod tests {
         println!("{}", url);
         let resp = ureq::get(&url).call();
         assert!(resp.ok());
-        panic!();
     }
 
     #[test]
