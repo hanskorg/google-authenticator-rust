@@ -25,6 +25,7 @@ use hmacsha1::hmac_sha1;
 use rand;
 use std::{mem, error, fmt, result};
 use std::time::{SystemTime, UNIX_EPOCH};
+use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 
 #[cfg(feature = "with-qrcode")]
 use qrcode::render::svg;
@@ -259,12 +260,13 @@ impl GoogleAuthenticator {
     ) -> String {
         let width = if width == 0 { 200 } else { width };
         let height = if height == 0 { 200 } else { height };
-        let scheme = urlencoding::encode(&format!(
+        let scheme = format!(
             "otpauth://totp/{}?secret={}&issuer={}",
             name,
             secret,
-            urlencoding::encode(title)
-        ));
+            title,
+        );
+        let scheme = utf8_percent_encode(&scheme, NON_ALPHANUMERIC);
         format!(
             "https://chart.googleapis.com/chart?chs={}x{}&chld={}|0&cht=qr&chl={}",
             width, height, level, scheme

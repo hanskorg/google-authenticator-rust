@@ -154,9 +154,11 @@ mod tests {
     fn test_qr_code_url() {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        let url = auth.qr_code_url(secret, "secret code", "hi", 0, 0, Medium);
+        let url = auth.qr_code_url(secret, "secret code", "hi there", 0, 0, Medium);
+        println!("{}", url);
         let resp = ureq::get(&url).call();
         assert!(resp.ok());
+        panic!();
     }
 
     #[test]
