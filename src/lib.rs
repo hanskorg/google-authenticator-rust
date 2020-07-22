@@ -130,6 +130,7 @@ mod tests {
         //        println!("{:?}",secret);
         assert_eq!(secret.len(), 32);
     }
+
     #[test]
     fn test_code() {
         let auth = GoogleAuthenticator::new();
@@ -154,9 +155,11 @@ mod tests {
     fn test_qr_code_url() {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        let url = auth.qr_code_url(secret, "secret code", "hi", 0, 0, Medium);
+        let url = auth.qr_code_url(secret, "secret code", "hi there", 0, 0, Medium);
+        println!("{}", url);
         let resp = ureq::get(&url).call();
         assert!(resp.ok());
+        // panic!();
     }
 
     #[test]
@@ -164,7 +167,8 @@ mod tests {
     fn test_qr_code() {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        auth.qr_code(secret, "secret_code", "hi", 0, 0, Medium).unwrap();
+        auth.qr_code(secret, "secret_code", "hi", 0, 0, Medium)
+            .unwrap();
     }
 }
 

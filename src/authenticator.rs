@@ -25,6 +25,7 @@ use hmacsha1::hmac_sha1;
 use rand;
 use std::{mem, error, fmt, result};
 use std::time::{SystemTime, UNIX_EPOCH};
+use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 
 #[cfg(feature = "with-qrcode")]
 use qrcode::render::svg;
@@ -107,7 +108,7 @@ impl GoogleAuthenticator {
     ///
     /// let auth = GoogleAuthenticator::new();
     /// ```
-    pub fn new() -> GoogleAuthenticator {
+    pub fn new() -> Self {
         Self::default()
     }
 
@@ -171,7 +172,7 @@ impl GoogleAuthenticator {
         } else {
             times_slice
         };
-        let key = self.base32_decode(secret)?;
+        let key = Self::base32_decode(secret)?;
         let msg_bytes = message.to_be_bytes();
         let hash = hmac_sha1(&key, &msg_bytes);
         let offset = hash[hash.len() - 1] & 0x0F;
@@ -259,12 +260,13 @@ impl GoogleAuthenticator {
     ) -> String {
         let width = if width == 0 { 200 } else { width };
         let height = if height == 0 { 200 } else { height };
-        let scheme = urlencoding::encode(&format!(
-            "otpauth://totp/{}?secret={}&issuer={}",
-            name,
-            secret,
-            urlencoding::encode(title)
-        ));
+
+        // Scheme will be a url to the totp we will use. Since it is a query parameter of the final
+        // url, it must be percent encoded. In turn, this means that `name` and `title` must be
+        // percent encoded twice for the final url to work if they contain characters that are not
+        // allowed in urls.
+        let scheme = Self::create_scheme(name, secret, title);
+        let scheme = utf8_percent_encode(&scheme, NON_ALPHANUMERIC);
         format!(
             "https://chart.googleapis.com/chart?chs={}x{}&chld={}|0&cht=qr&chl={}",
             width, height, level, scheme
@@ -301,7 +303,7 @@ impl GoogleAuthenticator {
     ) -> Result<String> {
         let width = if width == 0 { 200 } else { width };
         let height = if height == 0 { 200 } else { height };
-        let scheme = format!("otpauth://totp/{}?secret={}&issuer={}", name, secret, title);
+        let scheme = Self::create_scheme(name, secret, title);
         let code = QrCode::with_error_correction_level(scheme.as_bytes(), level.into())?;
         Ok(code
             .render()
@@ -311,7 +313,14 @@ impl GoogleAuthenticator {
             .build())
     }
 
-    fn base32_decode(&self, secret: &str) -> Result<Vec<u8>> {
+    /// Creates a totp url.
+    fn create_scheme(name: &str, secret: &str, title: &str) -> String {
+        let name = utf8_percent_encode(name, NON_ALPHANUMERIC);
+        let title = utf8_percent_encode(title, NON_ALPHANUMERIC);
+        format!("otpauth://totp/{}?secret={}&issuer={}", name, secret, title)
+    }
+
+    fn base32_decode(secret: &str) -> Result<Vec<u8>> {
         match base32::decode(base32::Alphabet::RFC4648 { padding: true }, secret) {
             Some(_decode_str) => Ok(_decode_str),
             _ => Err(GAError::Error("secret must be base32 decodeable.")),
