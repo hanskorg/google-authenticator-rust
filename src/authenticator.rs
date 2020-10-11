@@ -159,7 +159,7 @@ impl GoogleAuthenticator {
     pub fn get_code(&self, secret: &str, times_slice: u64) -> Result<String> {
         if secret.len() < SECRET_MIN_LEN || secret.len() > SECRET_MAX_LEN {
             return Err(GAError::Error(
-                "bad secret length. must be less than 128 and more than 16, recommand 32",
+                "bad secret length. must be less than 128 and more than 16, recommend 32",
             ));
         }
 
