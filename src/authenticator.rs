@@ -178,11 +178,7 @@ impl GoogleAuthenticator {
         let offset = hash[hash.len() - 1] & 0x0F;
         let mut truncated_hash: [u8; 4] = Default::default();
         truncated_hash.copy_from_slice(&hash[offset as usize..(offset + 4) as usize]);
-        let mut code: i32 = unsafe { mem::transmute::<[u8; 4], i32>(truncated_hash) };
-        if cfg!(target_endian = "big") {
-        } else {
-            code = i32::from_be(code);
-        }
+        let mut code = i32::from_be_bytes(truncated_hash);
         code &= 0x7FFFFFFF;
         code %= 1_000_000;
         let mut code_str = code.to_string();
