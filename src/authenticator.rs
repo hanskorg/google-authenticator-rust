@@ -20,10 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-use base32;
 use hmacsha1::hmac_sha1;
-use rand;
-use std::{mem, error, fmt, result};
+use std::{error, fmt, result};
 use std::time::{SystemTime, UNIX_EPOCH};
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 
@@ -68,9 +66,9 @@ impl fmt::Display for ErrorCorrectionLevel {
 }
 
 #[cfg(feature = "with-qrcode")]
-impl Into<qrcode::EcLevel> for ErrorCorrectionLevel {
-    fn into(self) -> qrcode::EcLevel {
-        match self {
+impl From<ErrorCorrectionLevel> for qrcode::EcLevel {
+    fn from(level: ErrorCorrectionLevel) -> Self {
+        match level {
             ErrorCorrectionLevel::High => EcLevel::H,
             ErrorCorrectionLevel::Medium => EcLevel::M,
             ErrorCorrectionLevel::Quartile => EcLevel::Q,
