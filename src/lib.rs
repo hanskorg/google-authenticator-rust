@@ -52,7 +52,7 @@ macro_rules! create_secret {
 }
 
 /// A macro that can be used for convenient access to the function
-/// `GoogleAuthenticator::create_secret`, by providing a default of the current time to the
+/// `GoogleAuthenticator::get_code`, by providing a default of the current time to the
 /// `times_slice` parameter.
 #[macro_export]
 macro_rules! get_code {
