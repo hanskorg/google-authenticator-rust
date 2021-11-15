@@ -20,10 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-use base32;
 use hmacsha1::hmac_sha1;
-use rand;
-use std::{mem, error, fmt, result};
+use std::{error, fmt, result};
 use std::time::{SystemTime, UNIX_EPOCH};
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 
@@ -68,9 +66,9 @@ impl fmt::Display for ErrorCorrectionLevel {
 }
 
 #[cfg(feature = "with-qrcode")]
-impl Into<qrcode::EcLevel> for ErrorCorrectionLevel {
-    fn into(self) -> qrcode::EcLevel {
-        match self {
+impl From<ErrorCorrectionLevel> for qrcode::EcLevel {
+    fn from(level: ErrorCorrectionLevel) -> Self {
+        match level {
             ErrorCorrectionLevel::High => EcLevel::H,
             ErrorCorrectionLevel::Medium => EcLevel::M,
             ErrorCorrectionLevel::Quartile => EcLevel::Q,
@@ -178,11 +176,7 @@ impl GoogleAuthenticator {
         let offset = hash[hash.len() - 1] & 0x0F;
         let mut truncated_hash: [u8; 4] = Default::default();
         truncated_hash.copy_from_slice(&hash[offset as usize..(offset + 4) as usize]);
-        let mut code: i32 = unsafe { mem::transmute::<[u8; 4], i32>(truncated_hash) };
-        if cfg!(target_endian = "big") {
-        } else {
-            code = i32::from_be(code);
-        }
+        let mut code = i32::from_be_bytes(truncated_hash);
         code &= 0x7FFFFFFF;
         code %= 1_000_000;
         let mut code_str = code.to_string();

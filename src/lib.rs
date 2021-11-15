@@ -1,4 +1,5 @@
 #![deny(missing_docs)]
+#![deny(unsafe_code)]
 // Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution and at
 // http://rust-lang.org/COPYRIGHT.
@@ -51,7 +52,7 @@ macro_rules! create_secret {
 }
 
 /// A macro that can be used for convenient access to the function
-/// `GoogleAuthenticator::create_secret`, by providing a default of the current time to the
+/// `GoogleAuthenticator::get_code`, by providing a default of the current time to the
 /// `times_slice` parameter.
 #[macro_export]
 macro_rules! get_code {
@@ -135,14 +136,14 @@ mod tests {
     fn test_code() {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        assert_eq!(6, auth.get_code(&secret, 0).unwrap().len());
+        assert_eq!(6, auth.get_code(secret, 0).unwrap().len());
     }
 
     #[test]
-    #[cfg(feature = "with-qrcode")]
     fn test_verify_code() {
         let auth = GoogleAuthenticator::new();
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
+        #[cfg(feature = "with-qrcode")]
         println!(
             "{:?}",
             auth.qr_code(secret, "qr_code", "name", 0, 0, Medium)
@@ -185,13 +186,13 @@ mod macro_tests {
     #[test]
     fn test_code() {
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        assert_eq!(6, get_code!(&secret).unwrap().len());
+        assert_eq!(6, get_code!(secret).unwrap().len());
     }
 
     #[test]
     fn test_verify_code() {
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
-        let code = get_code!(&secret).unwrap();
+        let code = get_code!(secret).unwrap();
         assert!(verify_code!(secret, &code));
     }
 
