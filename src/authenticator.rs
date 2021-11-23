@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 use hmacsha1::hmac_sha1;
-use std::{error, fmt, result};
-use std::time::{SystemTime, UNIX_EPOCH};
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
+use std::time::{SystemTime, UNIX_EPOCH};
+use std::{error, fmt, result};
 
 #[cfg(feature = "with-qrcode")]
 use qrcode::render::svg;
