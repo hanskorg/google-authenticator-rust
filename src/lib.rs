@@ -1,5 +1,5 @@
 #![deny(missing_docs)]
-#![deny(unsafe_code)]
+//#![deny(unsafe_code)]
 // Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution and at
 // http://rust-lang.org/COPYRIGHT.
@@ -31,6 +31,8 @@
 mod authenticator;
 
 pub use authenticator::*;
+use std::ffi::{CStr, CString};
+use std::os::raw::c_char;
 
 lazy_static::lazy_static! {
     /// A globally accessible, thread safe instance of a `GoogleAuthenticator`. Note that if the
@@ -117,6 +119,103 @@ macro_rules! qr_code {
     };
 }
 
+/// A function that can be used for convenient access to the function
+/// `create_secret`, by providing a default of `32` to the `length` parameter.
+#[no_mangle]
+pub extern "C" fn create_secret(len: u8) -> *const c_char {
+    CString::new(GA_AUTH.create_secret(len))
+        .expect("can't make secret.")
+        .into_raw()
+}
+
+/// A function that can be used for convenient access to the function
+/// `qr_code`, by providing a default of 200 to the `width` parameter, 200
+/// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
+#[no_mangle]
+#[cfg(feature = "with-qrcode")]
+pub extern "C" fn qr_code(
+    secret: *const c_char,
+    name: *const c_char,
+    title: *const c_char,
+    witdh: u32,
+    height: u32,
+    level: crate::ErrorCorrectionLevel,
+) -> *const c_char {
+    CString::new(
+        GA_AUTH
+            .qr_code(
+                unsafe { CStr::from_ptr(secret) }.to_str().unwrap(),
+                unsafe { CStr::from_ptr(name) }.to_str().unwrap(),
+                unsafe { CStr::from_ptr(title) }.to_str().unwrap(),
+                witdh,
+                height,
+                level,
+            )
+            .expect("can't get qr code."),
+    )
+    .unwrap()
+    .into_raw()
+}
+
+/// A function that can be used for convenient access to the function
+/// `qr_code_url`, by providing a default of 200 to the `width` parameter, 200
+/// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
+#[no_mangle]
+pub extern "C" fn qr_code_url(
+    secret: *const c_char,
+    name: *const c_char,
+    title: *const c_char,
+    witdh: u32,
+    height: u32,
+    level: crate::ErrorCorrectionLevel,
+) -> *const c_char {
+    CString::new(GA_AUTH.qr_code_url(
+        unsafe { CStr::from_ptr(secret) }.to_str().unwrap(),
+        unsafe { CStr::from_ptr(name) }.to_str().unwrap(),
+        unsafe { CStr::from_ptr(title) }.to_str().unwrap(),
+        witdh,
+        height,
+        level,
+    ))
+    .expect("can't get qrcode url now.")
+    .into_raw()
+}
+
+/// A function that can be used for convenient access to the function
+/// `get_code`, by providing a default of the current time to the
+/// `times_slice` parameter.
+#[no_mangle]
+pub extern "C" fn get_code(secret: *const c_char, time_slice: u64) -> *const c_char {
+    CString::new(
+        GA_AUTH
+            .get_code(
+                unsafe { CStr::from_ptr(secret) }.to_str().unwrap(),
+                time_slice,
+            )
+            .expect("can't get code now"),
+    )
+    .unwrap()
+    .into_raw()
+}
+
+/// A function that can be used for convenient access to the function
+/// `verify_code`, by providing a default of 0 to the `discrepancy` parameter,
+/// and the current time to the `times_slice` parameter.
+#[no_mangle]
+pub extern "C" fn verify_code(
+    secret: *const c_char,
+    code: *const c_char,
+    discrepancy: u64,
+    time_slice: u64,
+) -> bool {
+    GA_AUTH.verify_code(
+        unsafe { CStr::from_ptr(secret) }.to_str().unwrap(),
+        unsafe { CStr::from_ptr(code) }.to_str().unwrap(),
+        discrepancy,
+        time_slice,
+    )
+}
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "with-qrcode")]
@@ -159,7 +258,7 @@ mod tests {
         let url = auth.qr_code_url(secret, "secret code", "hi there", 0, 0, Medium);
         println!("{}", url);
         let resp = ureq::get(&url).call();
-        assert!(resp.ok());
+        assert!(resp)
         // panic!();
     }
 
@@ -202,7 +301,6 @@ mod macro_tests {
         let secret = "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3";
         assert!(qr_code!(secret, "qr_code", "name").is_ok());
     }
-
     #[test]
     #[cfg(feature = "with-qrcode")]
     fn test_qr_code_url() {

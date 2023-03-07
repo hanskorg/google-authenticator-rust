@@ -32,14 +32,16 @@ use qrcode::{EcLevel, QrCode};
 
 #[cfg(any(feature = "with-qrcode"))]
 use qrcode::types::QrError;
-
+/// cbindgen:ignore
 const SECRET_MAX_LEN: usize = 128;
+/// cbindgen:ignore
 const SECRET_MIN_LEN: usize = 16;
 
 /// Controls the amount of fault tolerance that the QR code should accept. Require the feature
 /// flag `with-qrcode`.
 // This is a new enum to use in our public interface instead of rqcode::EcLevel.
 #[derive(Copy, Clone)]
+#[repr(C)]
 pub enum ErrorCorrectionLevel {
     /// 7% of data bytes can be restored.
     Low,
@@ -77,6 +79,7 @@ impl From<ErrorCorrectionLevel> for qrcode::EcLevel {
     }
 }
 
+/// cbindgen:ignore
 /// A list of all usable characters in base32.
 const ALPHABET: [char; 33] = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',

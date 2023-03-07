@@ -1,0 +1,4 @@
+language = "C++"
+[defines]
+"feature = with-qrcode" = "DEFINE_QRCODE"
+[export]
