@@ -219,6 +219,16 @@ pub unsafe extern "C" fn verify_code(
     )
 }
 
+/// # Safety 
+/// A function that can be used for free returnd to C string
+/// `str`, the string which be passed to outside 
+#[no_mangle]
+pub unsafe extern "C" fn free_str(str: *mut c_char) {
+    unsafe {
+        let _ = CString::from_raw(str);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "with-qrcode")]

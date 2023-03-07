@@ -47,6 +47,7 @@ const char *qr_code(const char *secret,
 #endif
 
 /**
+ * # Safety
  * A function that can be used for convenient access to the function
  * `qr_code_url`, by providing a default of 200 to the `width` parameter, 200
  * to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
@@ -59,6 +60,7 @@ const char *qr_code_url(const char *secret,
                         enum ErrorCorrectionLevel level);
 
 /**
+ * # Safety
  * A function that can be used for convenient access to the function
  * `get_code`, by providing a default of the current time to the
  * `times_slice` parameter.
@@ -66,8 +68,16 @@ const char *qr_code_url(const char *secret,
 const char *get_code(const char *secret, uint64_t time_slice);
 
 /**
+ * # Safety
  * A function that can be used for convenient access to the function
  * `verify_code`, by providing a default of 0 to the `discrepancy` parameter,
  * and the current time to the `times_slice` parameter.
  */
 bool verify_code(const char *secret, const char *code, uint64_t discrepancy, uint64_t time_slice);
+
+/**
+ * # Safety
+ * A function that can be used for free returnd to C string
+ * `str`, the string which be passed to outside
+ */
+void free_str(char *str);
