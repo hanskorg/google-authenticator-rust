@@ -1,4 +1,5 @@
-language = "C++"
+language = "C"
+cpp_compat = true
 [defines]
 "feature = with-qrcode" = "DEFINE_QRCODE"
 [export]
