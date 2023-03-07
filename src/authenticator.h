@@ -79,6 +79,14 @@ const char *get_code(const char *secret, uint64_t time_slice);
  */
 bool verify_code(const char *secret, const char *code, uint64_t discrepancy, uint64_t time_slice);
 
+
+/**
+ * # Safety
+ * A function that can be used for free returnd to C string
+ * `str`, the string which be passed to outside
+ */
+void free_str(char *str);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif // __cplusplus
