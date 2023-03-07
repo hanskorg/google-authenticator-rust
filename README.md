@@ -17,6 +17,20 @@ Add this to your `Cargo.toml`:
 [dependencies]
 google-authenticator = "0.2.0"
 ```
+#### C/C++ lib
+You can find the header file from [src/authenticator.h](src/authenticator.h), and then build the lib for your target.
+
+How to make header file and build lib, you can refer to the following case.
+
+Tools you may need : [rust-lipo](https://github.com/TimNN/cargo-lipo) (cbingen)[https://github.com/eqrion/cbindgen]
+
+```
+cbindgen ./ -l c --output src/authenticator.h
+```
+
+```
+ cargo lipo --features with-qrcode --targets aarch64-apple-darwin  x86_64-apple-darwin aarch64-apple-ios
+```
 
 ## Examples
 
