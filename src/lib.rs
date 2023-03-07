@@ -157,7 +157,7 @@ pub unsafe extern "C" fn qr_code(
     .into_raw()
 }
 
-/// # Safety 
+/// # Safety
 /// A function that can be used for convenient access to the function
 /// `qr_code_url`, by providing a default of 200 to the `width` parameter, 200
 /// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
@@ -182,9 +182,10 @@ pub unsafe extern "C" fn qr_code_url(
     .into_raw()
 }
 
-/// # Safety 
+/// # Safety
 /// A function that can be used for convenient access to the function
 /// `get_code`, by providing a default of the current time to the
+/// `secret` parameter.
 /// `times_slice` parameter.
 #[no_mangle]
 pub unsafe extern "C" fn get_code(secret: *const c_char, time_slice: u64) -> *const c_char {
@@ -200,7 +201,7 @@ pub unsafe extern "C" fn get_code(secret: *const c_char, time_slice: u64) -> *co
     .into_raw()
 }
 
-/// # Safety 
+/// # Safety
 /// A function that can be used for convenient access to the function
 /// `verify_code`, by providing a default of 0 to the `discrepancy` parameter,
 /// and the current time to the `times_slice` parameter.
@@ -219,9 +220,9 @@ pub unsafe extern "C" fn verify_code(
     )
 }
 
-/// # Safety 
+/// # Safety
 /// A function that can be used for free returnd to C string
-/// `str`, the string which be passed to outside 
+/// `str`, the string which be passed to outside
 #[no_mangle]
 pub unsafe extern "C" fn free_str(str: *mut c_char) {
     unsafe {
