@@ -22,7 +22,7 @@ You can find the header file from [src/authenticator.h](src/authenticator.h), an
 
 How to make header file and build lib, you can refer to the following case.
 
-Tools you may need : [rust-lipo](https://github.com/TimNN/cargo-lipo) (cbingen)[https://github.com/eqrion/cbindgen]
+Tools you may need: [rust-lipo](https://github.com/TimNN/cargo-lipo) [cbingen](https://github.com/eqrion/cbindgen)
 
 ```
 cbindgen ./ -l c --output src/authenticator.h
