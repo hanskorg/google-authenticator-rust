@@ -3,3 +3,4 @@
 **/*.rs.bk
 Cargo.lock
 *.iml
+.DS_Store
