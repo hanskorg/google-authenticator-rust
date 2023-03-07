@@ -24,12 +24,19 @@ How to make header file and build lib, you can refer to the following case.
 
 Tools you may need: [rust-lipo](https://github.com/TimNN/cargo-lipo) [cbingen](https://github.com/eqrion/cbindgen)
 
-```
+```shell
+## gen c/c++ header file
 cbindgen ./ -l c --output src/authenticator.h
-```
 
 ```
- cargo lipo --features with-qrcode --targets aarch64-apple-darwin  x86_64-apple-darwin aarch64-apple-ios
+
+```shell 
+## build for MacOS and IOS
+cargo lipo --features with-qrcode --targets aarch64-apple-darwin  x86_64-apple-darwin aarch64-apple-ios
+
+## build for linux musl
+cargo build --all-features  --lib --release --target x86_64-unknown-linux-musl
+
 ```
 
 ## Examples

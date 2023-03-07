@@ -15,7 +15,7 @@ edition = "2018"
 name="authenticator"
 crate-type = ["staticlib", "cdylib"]
 #path = "src/lib.rs"
-required-features = ["with-qrcode"]
+#required-features = ["with-qrcode","clib"]
 
 [dependencies]
 rand = "0.8.5"
@@ -41,3 +41,4 @@ ureq = "2.6.1"
 [features]
 default = ["qrcode"]
 with-qrcode = ["qrcode"]
+clib = []

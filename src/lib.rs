@@ -1,5 +1,5 @@
 #![deny(missing_docs)]
-//#![deny(unsafe_code)]
+#![cfg_attr(not(feature = "clib"), deny(unsafe_code))]
 // Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution and at
 // http://rust-lang.org/COPYRIGHT.
@@ -31,7 +31,9 @@
 mod authenticator;
 
 pub use authenticator::*;
-use std::ffi::{CStr, CString};
+#[cfg(feature = "clib")]
+use std::ffi::{CStr,CString};
+#[cfg(feature = "clib")]
 use std::os::raw::c_char;
 
 lazy_static::lazy_static! {
@@ -121,6 +123,7 @@ macro_rules! qr_code {
 
 /// A function that can be used for convenient access to the function
 /// `create_secret`, by providing a default of `32` to the `length` parameter.
+#[cfg(feature = "clib")]
 #[no_mangle]
 pub extern "C" fn create_secret(len: u8) -> *const c_char {
     CString::new(GA_AUTH.create_secret(len))
@@ -131,8 +134,8 @@ pub extern "C" fn create_secret(len: u8) -> *const c_char {
 /// A function that can be used for convenient access to the function
 /// `qr_code`, by providing a default of 200 to the `width` parameter, 200
 /// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
+#[cfg(all(feature = "with-qrcode", feature="clib"))]
 #[no_mangle]
-#[cfg(feature = "with-qrcode")]
 pub unsafe extern "C" fn qr_code(
     secret: *const c_char,
     name: *const c_char,
@@ -161,6 +164,7 @@ pub unsafe extern "C" fn qr_code(
 /// A function that can be used for convenient access to the function
 /// `qr_code_url`, by providing a default of 200 to the `width` parameter, 200
 /// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
+#[cfg(feature = "clib")]
 #[no_mangle]
 pub unsafe extern "C" fn qr_code_url(
     secret: *const c_char,
@@ -187,6 +191,7 @@ pub unsafe extern "C" fn qr_code_url(
 /// `get_code`, by providing a default of the current time to the
 /// `secret` parameter.
 /// `times_slice` parameter.
+#[cfg(feature = "clib")]
 #[no_mangle]
 pub unsafe extern "C" fn get_code(secret: *const c_char, time_slice: u64) -> *const c_char {
     CString::new(
@@ -205,6 +210,7 @@ pub unsafe extern "C" fn get_code(secret: *const c_char, time_slice: u64) -> *co
 /// A function that can be used for convenient access to the function
 /// `verify_code`, by providing a default of 0 to the `discrepancy` parameter,
 /// and the current time to the `times_slice` parameter.
+#[cfg(feature = "clib")]
 #[no_mangle]
 pub unsafe extern "C" fn verify_code(
     secret: *const c_char,
@@ -223,6 +229,7 @@ pub unsafe extern "C" fn verify_code(
 /// # Safety
 /// A function that can be used for free returnd to C string
 /// `str`, the string which be passed to outside
+#[cfg(feature = "clib")]
 #[no_mangle]
 pub unsafe extern "C" fn free_str(str: *mut c_char) {
     unsafe {
