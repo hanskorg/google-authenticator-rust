@@ -26,11 +26,15 @@ typedef enum ErrorCorrectionLevel {
   High,
 } ErrorCorrectionLevel;
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 /**
  * A function that can be used for convenient access to the function
  * `create_secret`, by providing a default of `32` to the `length` parameter.
  */
-const char *create_secret(uint8_t len);
+const char *create_secret(uint8_t len) CF_SWIFT_NAME(create_secret(len:));
 
 #if defined(DEFINE_QRCODE)
 /**
@@ -43,7 +47,7 @@ const char *qr_code(const char *secret,
                     const char *title,
                     uint32_t witdh,
                     uint32_t height,
-                    enum ErrorCorrectionLevel level);
+                    enum ErrorCorrectionLevel level) CF_SWIFT_NAME(qr_code(secret:name:title:witdh:height:level:));
 #endif
 
 /**
@@ -57,15 +61,17 @@ const char *qr_code_url(const char *secret,
                         const char *title,
                         uint32_t witdh,
                         uint32_t height,
-                        enum ErrorCorrectionLevel level);
+                        enum ErrorCorrectionLevel level) CF_SWIFT_NAME(qr_code_url(secret:name:title:witdh:height:level:));
 
 /**
  * # Safety
  * A function that can be used for convenient access to the function
  * `get_code`, by providing a default of the current time to the
+ * `secret` parameter.
  * `times_slice` parameter.
  */
-const char *get_code(const char *secret, uint64_t time_slice);
+const char *get_code(const char *secret,
+                     uint64_t time_slice) CF_SWIFT_NAME(get_code(secret:time_slice:));
 
 /**
  * # Safety
@@ -73,11 +79,18 @@ const char *get_code(const char *secret, uint64_t time_slice);
  * `verify_code`, by providing a default of 0 to the `discrepancy` parameter,
  * and the current time to the `times_slice` parameter.
  */
-bool verify_code(const char *secret, const char *code, uint64_t discrepancy, uint64_t time_slice);
+bool verify_code(const char *secret,
+                 const char *code,
+                 uint64_t discrepancy,
+                 uint64_t time_slice) CF_SWIFT_NAME(verify_code(secret:code:discrepancy:time_slice:));
 
 /**
  * # Safety
  * A function that can be used for free returnd to C string
  * `str`, the string which be passed to outside
  */
-void free_str(char *str);
+void free_str(char *str) CF_SWIFT_NAME(free_str(str:));
+
+#ifdef __cplusplus
+} // extern "C"
+#endif // __cplusplus
