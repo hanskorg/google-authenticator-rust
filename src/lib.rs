@@ -94,7 +94,7 @@ macro_rules! qr_code_url {
             $title,
             200,
             200,
-            crate::ErrorCorrectionLevel::Medium,
+            $crate::ErrorCorrectionLevel::Medium,
         )
     };
 }
@@ -114,7 +114,7 @@ macro_rules! qr_code {
             $title,
             200,
             200,
-            crate::ErrorCorrectionLevel::Medium,
+            $crate::ErrorCorrectionLevel::Medium,
         )
     };
 }
@@ -133,7 +133,7 @@ pub extern "C" fn create_secret(len: u8) -> *const c_char {
 /// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
 #[no_mangle]
 #[cfg(feature = "with-qrcode")]
-pub extern "C" fn qr_code(
+pub unsafe extern "C" fn qr_code(
     secret: *const c_char,
     name: *const c_char,
     title: *const c_char,
@@ -157,11 +157,12 @@ pub extern "C" fn qr_code(
     .into_raw()
 }
 
+/// # Safety 
 /// A function that can be used for convenient access to the function
 /// `qr_code_url`, by providing a default of 200 to the `width` parameter, 200
 /// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
 #[no_mangle]
-pub extern "C" fn qr_code_url(
+pub unsafe extern "C" fn qr_code_url(
     secret: *const c_char,
     name: *const c_char,
     title: *const c_char,
@@ -181,11 +182,12 @@ pub extern "C" fn qr_code_url(
     .into_raw()
 }
 
+/// # Safety 
 /// A function that can be used for convenient access to the function
 /// `get_code`, by providing a default of the current time to the
 /// `times_slice` parameter.
 #[no_mangle]
-pub extern "C" fn get_code(secret: *const c_char, time_slice: u64) -> *const c_char {
+pub unsafe extern "C" fn get_code(secret: *const c_char, time_slice: u64) -> *const c_char {
     CString::new(
         GA_AUTH
             .get_code(
@@ -198,11 +200,12 @@ pub extern "C" fn get_code(secret: *const c_char, time_slice: u64) -> *const c_c
     .into_raw()
 }
 
+/// # Safety 
 /// A function that can be used for convenient access to the function
 /// `verify_code`, by providing a default of 0 to the `discrepancy` parameter,
 /// and the current time to the `times_slice` parameter.
 #[no_mangle]
-pub extern "C" fn verify_code(
+pub unsafe extern "C" fn verify_code(
     secret: *const c_char,
     code: *const c_char,
     discrepancy: u64,
