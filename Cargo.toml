@@ -7,7 +7,7 @@ homepage = "https://github.com/hanskorg/google-authenticator-rust.git"
 license = "MIT"
 readme = "README.md"
 description = "This Rust crate can be used to interact with the Google Authenticator mobile app for 2-factor-authentication."
-keywords = ["google authenticator","totp","otp","2fa","hotp"]
+keywords = ["GoogleAuthenticator","totp","otp","2fa","hotp"]
 categories = ["authentication","algorithms"]
 edition = "2021"
 
