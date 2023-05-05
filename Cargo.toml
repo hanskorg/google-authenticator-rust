@@ -1,15 +1,15 @@
 [package]
 name = "google-authenticator"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["hans <hans@hansk.org>"]
 repository = "https://github.com/hanskorg/google-authenticator-rust.git"
 homepage = "https://github.com/hanskorg/google-authenticator-rust.git"
 license = "MIT"
 readme = "README.md"
 description = "This Rust crate can be used to interact with the Google Authenticator mobile app for 2-factor-authentication."
-keywords = ["GoogleAuthenticator"]
-categories = ["cryptography"]
-edition = "2018"
+keywords = ["google authenticator","totp","otp","2fa","hotp"]
+categories = ["authentication","algorithms"]
+edition = "2021"
 
 [lib]
 name="authenticator"
