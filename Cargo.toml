@@ -12,10 +12,8 @@ categories = ["authentication","algorithms"]
 edition = "2021"
 
 [lib]
-name="authenticator"
-crate-type = ["staticlib", "cdylib"]
-#path = "src/lib.rs"
-#required-features = ["with-qrcode","clib"]
+name = "google_authenticator"
+crate-type = ["rlib","staticlib"]
 
 [dependencies]
 rand = "0.8.5"

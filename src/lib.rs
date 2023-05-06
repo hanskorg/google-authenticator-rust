@@ -32,7 +32,7 @@ mod authenticator;
 
 pub use authenticator::*;
 #[cfg(feature = "clib")]
-use std::ffi::{CStr,CString};
+use std::ffi::{CStr, CString};
 #[cfg(feature = "clib")]
 use std::os::raw::c_char;
 
@@ -134,7 +134,7 @@ pub extern "C" fn create_secret(len: u8) -> *const c_char {
 /// A function that can be used for convenient access to the function
 /// `qr_code`, by providing a default of 200 to the `width` parameter, 200
 /// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
-#[cfg(all(feature = "with-qrcode", feature="clib"))]
+#[cfg(all(feature = "with-qrcode", feature = "clib"))]
 #[no_mangle]
 pub unsafe extern "C" fn qr_code(
     secret: *const c_char,
