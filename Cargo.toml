@@ -13,7 +13,7 @@ edition = "2021"
 
 [lib]
 name = "google_authenticator"
-crate-type = ["rlib","staticlib"]
+crate-type = ["rlib","staticlib","cdylib"]
 
 [dependencies]
 rand = "0.8.5"

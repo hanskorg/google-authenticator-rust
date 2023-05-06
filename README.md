@@ -1,6 +1,6 @@
 # GoogleAuthenticator
 
-[![Build Status](https://travis-ci.org/hanskorg/google-authenticator-rust.svg?branch=master)](https://travis-ci.org/hanskorg/google-authenticator-rust)
+[![CI](https://github.com/hanskorg/google-authenticator-rust/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/hanskorg/google-authenticator-rust/actions/workflows/ci.yml)
 ![Build Status](https://img.shields.io/crates/v/google-authenticator.svg)
 
 ## Introduction
@@ -16,6 +16,12 @@ Add this to your `Cargo.toml`:
 ```toml
 [dependencies]
 google-authenticator = "0.4"
+
+
+[dependencies.google-authenticator ]
+version= "0.4"
+features = ["with-qrcode"]
+
 ```
 #### C/C++ lib
 You can find the header file from [src/authenticator.h](src/authenticator.h), and then build the lib for your target.
