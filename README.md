@@ -41,7 +41,7 @@ cbindgen ./ -l c --output src/authenticator.h
 git clone https://github.com/hanskorg/google-authenticator-rust.git && cd google-authenticator-rust
 
 ## change Cargo.toml
-crate-type = ["staticlib","cdylib"]
+crate-type = ["staticlib","cdylib"] 
 required-features = ["with-qrcode","clib"]
 
 ## build for MacOS and IOS
