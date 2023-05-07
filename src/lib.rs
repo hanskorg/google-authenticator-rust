@@ -105,6 +105,7 @@ macro_rules! qr_code_url {
 /// `GoogleAuthenticator::qr_code`, by providing a default of 200 to the `width` parameter, 200
 /// to the `height` parameter, and `ErrorCorrectionLevel::Medium` to the `level` parameter.
 #[macro_export]
+#[cfg(any(feature="with-qrcode",doc))]
 macro_rules! qr_code {
     ($secret: expr, $name: expr, $title: expr, $width: expr, $height: expr, $level: expr) => {
         GA_AUTH.qr_code($secret, $name, $title, $width, $height, $level)

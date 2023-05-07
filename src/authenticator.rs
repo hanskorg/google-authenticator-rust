@@ -25,12 +25,12 @@ use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::{error, fmt, result};
 
-#[cfg(feature = "with-qrcode")]
+#[cfg(any(feature = "with-qrcode",doc))]
 use qrcode::render::svg;
-#[cfg(feature = "with-qrcode")]
+#[cfg(any(feature = "with-qrcode",doc))]
 use qrcode::{EcLevel, QrCode};
 
-#[cfg(any(feature = "with-qrcode"))]
+#[cfg(any(feature = "with-qrcode",doc))]
 use qrcode::types::QrError;
 /// cbindgen:ignore
 const SECRET_MAX_LEN: usize = 128;
@@ -67,7 +67,7 @@ impl fmt::Display for ErrorCorrectionLevel {
     }
 }
 
-#[cfg(feature = "with-qrcode")]
+#[cfg(any(feature = "with-qrcode", doc))]
 impl From<ErrorCorrectionLevel> for qrcode::EcLevel {
     fn from(level: ErrorCorrectionLevel) -> Self {
         match level {
@@ -288,7 +288,7 @@ impl GoogleAuthenticator {
     ///     ErrorCorrectionLevel::Medium,
     /// );
     /// ```
-    #[cfg(feature = "with-qrcode")]
+    #[cfg(any(feature = "with-qrcode", doc))]
     pub fn qr_code(
         &self,
         secret: &str,
@@ -332,7 +332,7 @@ pub enum GAError {
     Error(&'static str),
     /// An error related to the QR code. This variant is only available with the feature flag
     /// `with-qrcode`.
-    #[cfg(any(feature = "with-qrcode"))]
+    #[cfg(any(feature = "with-qrcode",doc))]
     QrError(QrError),
 }
 
@@ -340,21 +340,21 @@ impl error::Error for GAError {
     fn description(&self) -> &str {
         match *self {
             GAError::Error(description) => description,
-            #[cfg(any(feature = "with-qrcode"))]
+            #[cfg(any(feature = "with-qrcode",doc))]
             GAError::QrError(ref _err) => "",
         }
     }
 
     fn cause(&self) -> Option<&dyn error::Error> {
         match *self {
-            #[cfg(any(feature = "with-qrcode"))]
+            #[cfg(any(feature = "with-qrcode", doc))]
             GAError::QrError(ref _err) => None,
             GAError::Error(_) => None,
         }
     }
 }
 
-#[cfg(any(feature = "with-qrcode"))]
+#[cfg(any(feature = "with-qrcode", doc))]
 impl From<QrError> for GAError {
     fn from(err: QrError) -> GAError {
         GAError::QrError(err)
@@ -365,7 +365,7 @@ impl fmt::Display for GAError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             GAError::Error(desc) => f.write_str(desc),
-            #[cfg(any(feature = "with-qrcode"))]
+            #[cfg(any(feature = "with-qrcode",doc))]
             GAError::QrError(ref err) => fmt::Display::fmt(err, f),
         }
     }
