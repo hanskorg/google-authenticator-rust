@@ -48,10 +48,10 @@ lazy_static::lazy_static! {
 #[macro_export]
 macro_rules! create_secret {
     ($length: expr) => {
-        GA_AUTH.create_secret($length)
+        $crate::GA_AUTH.create_secret($length)
     };
     () => {
-        GA_AUTH.create_secret(32)
+        $crate::GA_AUTH.create_secret(32)
     };
 }
 
@@ -61,10 +61,10 @@ macro_rules! create_secret {
 #[macro_export]
 macro_rules! get_code {
     ($secret: expr, $time_slice: expr) => {
-        GA_AUTH.get_code($secret, time_slice)
+        $crate::GA_AUTH.get_code($secret, time_slice)
     };
     ($secret: expr) => {
-        GA_AUTH.get_code($secret, 0)
+        $crate::GA_AUTH.get_code($secret, 0)
     };
 }
 
@@ -74,10 +74,10 @@ macro_rules! get_code {
 #[macro_export]
 macro_rules! verify_code {
     ($secret: expr, $code: expr, $discrepancy: expr, $time_slice: expr) => {
-        GA_AUTH.verify_code($secret, $code, $discrepancy, $time_slice)
+        $crate::GA_AUTH.verify_code($secret, $code, $discrepancy, $time_slice)
     };
     ($secret: expr, $code: expr) => {
-        GA_AUTH.verify_code($secret, $code, 0, 0)
+        $crate::GA_AUTH.verify_code($secret, $code, 0, 0)
     };
 }
 
@@ -87,10 +87,10 @@ macro_rules! verify_code {
 #[macro_export]
 macro_rules! qr_code_url {
     ($secret: expr, $name: expr, $title: expr, $width: expr, $height: expr, $level: expr) => {
-        GA_AUTH.qr_code_url($secret, $name, $title, $width, $height, $level)
+        $crate::GA_AUTH.qr_code_url($secret, $name, $title, $width, $height, $level)
     };
     ($secret: expr, $name: expr, $title: expr) => {
-        GA_AUTH.qr_code_url(
+        $crate::GA_AUTH.qr_code_url(
             $secret,
             $name,
             $title,
@@ -108,10 +108,10 @@ macro_rules! qr_code_url {
 #[cfg(any(feature="with-qrcode",doc))]
 macro_rules! qr_code {
     ($secret: expr, $name: expr, $title: expr, $width: expr, $height: expr, $level: expr) => {
-        GA_AUTH.qr_code($secret, $name, $title, $width, $height, $level)
+        $crate::GA_AUTH.qr_code($secret, $name, $title, $width, $height, $level)
     };
     ($secret: expr, $name: expr, $title: expr) => {
-        GA_AUTH.qr_code(
+        $crate::GA_AUTH.qr_code(
             $secret,
             $name,
             $title,
