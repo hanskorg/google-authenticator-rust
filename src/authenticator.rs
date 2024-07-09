@@ -191,16 +191,16 @@ impl GoogleAuthenticator {
 
     /// This function verifies that a provided code is correct. The parameter `secret` is used to
     /// verify the user. `code` is the code that will be verified. The parameter `discrepancy`
-    /// indicates number of seconds ago that a code may be generated. `time_slice` is used to modify
-    /// what the current time is, as a unix timestamp. If 0 is provided here, the current time will
-    /// be used.
+    /// indicates number of windows ago that a code may be generated, which results to `discrepancy` * 30
+    /// seconds. If 0 is provided, the token cannot be expired. `time_slice` is used to modify what
+    /// the current time is, as a unix timestamp. If 0 is provided here, the current time will be used.
     ///
     /// ### Example
     /// ```rust
     /// use google_authenticator::GoogleAuthenticator;
     ///
     /// let authenticator = GoogleAuthenticator::new();
-    /// authenticator.verify_code("I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3", "224124", 3, 1523610659 / 30);
+    /// authenticator.verify_code("I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3", "224124", 0, 1523610659 / 30);
     /// ```
     pub fn verify_code(&self, secret: &str, code: &str, discrepancy: u64, time_slice: u64) -> bool {
         if code.len() != self.code_len {
